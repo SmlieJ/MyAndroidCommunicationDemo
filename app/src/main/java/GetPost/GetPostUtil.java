@@ -37,70 +37,52 @@ public class GetPostUtil {
             //TODO 这里的ip 地址一定不能使localhost 一定要是电脑的或者是正式ip地址.
             //如果写成了localhost，那么就会报错java.net.ConnectException: localhost/127.0.0.1:8080 - Connection refused
             //URL url = new URL("http://localhost:8080/tomcat.png");
-            URL realUrl = new URL("http://localhost:35444/api/values/5");
-            HttpURLConnection httpURLConnection = (HttpURLConnection) realUrl.openConnection();
-            httpURLConnection.setRequestMethod("GET");
-            httpURLConnection.setConnectTimeout(5000);
-            //Sets the flag indicating whether this URLConnection allows input. It cannot be set after the connection is established.
-            httpURLConnection.setDoInput(true);
+
+            String resultString = null;
+            HttpURLConnection conn = null;
+            InputStream inputStream = null;
+            ByteArrayOutputStream bos = null;
 
 
-            //判断服务器端的响应码是不是200
-            InputStream in = null;
-            if(httpURLConnection.getResponseCode()==200){
-                in = httpURLConnection.getInputStream();
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                byte[] arr = new byte[1024];
-                int len=0;
-                while((len=in.read(arr))!=-1){
-                    bos.write(arr,0,len);
-                }
+            String srcUrl = "http://localhost:35444/api/values";
+            URL url = new URL(srcUrl);
+            conn = (HttpURLConnection) url.openConnection();
+            conn.setReadTimeout(10000);
+            conn.setConnectTimeout(10000);
+            conn.setRequestMethod("GET");
+            // 请求头必须设置，参数必须正确。
+            conn.setRequestProperty("Accept", "application/json,text/html;q=0.9,image/webp,*/*;q=0.8");
+            conn.setRequestProperty("Cache-Control", "max-age=0");
+            conn.setDoInput(true);
+            conn.setDoOutput(false);
 
-                byte[] b = bos.toByteArray();
-                String ss = new String(b,"utf-8");
-                return ss;
+            conn.connect();
+
+            int responseCode = conn.getResponseCode();
+
+
+            bos = new ByteArrayOutputStream();
+            byte[] buffer = new byte[10240];
+            int len = -1;
+            while ((len = inputStream.read(buffer)) != -1) {
+                bos.write(buffer, 0, len);
             }
-            //关闭流
-            in.close();
-            return "";
+            bos.flush();
+            byte[] resultByte = bos.toByteArray();
 
-            //获取返回的文件
-           /* InputStream in = null;
-            FileOutputStream fos = null;
-            if (httpURLConnection.getResponseCode() == 200) {
-                in = httpURLConnection.getInputStream();
-                //一定不能直接在FileOutputStream里面写文件名，需要添加路径
-                //错误的写法：fos = new FileOutputStream("a.bmp");
-                //下面存储到内部存储的私有的cache目录里面，注意了生成的文件名是cachea.bmp
-             *//*   fos = new FileOutputStream(getCacheDir().getPath() + "a.bmp");
-                byte[] arr = new byte[1024];
-                int len = 0;
-                //每次读取 1024个字节，如果读取返回为-1说明到了文件的末尾，结束读取
-                while ((len = in.read(arr)) != -1) {
-                    fos.write(arr, 0, len);
-                }
-                //一定要记住要关闭读取流。
-                in.close();
-                fos.close();*//*
-                return "";
-            }
-            else
-                return  "";*/
+            resultString = new String(resultByte);
+            return resultString;
 
-        }
-        catch (MalformedURLException e) {
+        } catch (MalformedURLException e) {
             e.printStackTrace();
             return e.toString();
-        }
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             return e.toString();
-        }
-        catch (ProtocolException e) {
+        } catch (ProtocolException e) {
             e.printStackTrace();
             return e.toString();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
             return e.toString();
         }
@@ -110,11 +92,10 @@ public class GetPostUtil {
 
     /**
      * 向指定URL发送POST方法的请求
-     * @param url 发送请求的URL
-     * @param params 请求参数，请求参数应该是name1=value1&name2=value2的形式。
+
      * @return URL所代表远程资源的响应
      */
-    public static String sendPost(String url, String params)
+    public static String sendPost()
     {
         URL realUrl = null;
         try {

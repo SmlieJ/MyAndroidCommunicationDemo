@@ -6,8 +6,16 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.content.Intent;
-import android.widget.ImageButton;
+import android.view.View;
+import android.widget.EditText;
+import android.app.Activity;
+import android.os.Handler;
+import android.os.Message;
+import android.view.View.OnClickListener;
+import android.widget.TextView;
 
+import GetPost.GetPostUtil;
+import Socket.SocketClinet;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -15,8 +23,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        btn1=(Button) findViewById(R.id.btnJump);
-        btn1.setOnClickListener(new View.OnClickListener(){
+        show =(TextView) findViewById(R.id.TextViewShow);
+        btnJump=(Button) findViewById(R.id.btnJump);
+        //Socket 需要用到的
+     /*   input =(EditText) findViewById(R.id.input);
+        send =(Button) findViewById(R.id.send);*/
+        //Activity Jump
+        btnJump.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
 
@@ -32,60 +45,72 @@ public class MainActivity extends AppCompatActivity {
                 //startActivity(i);
             }
         });
-        btn2=(Button) findViewById(R.id.btnGet);
-        btn2.setOnClickListener(new View.OnClickListener(){
+
+        btnGet=(Button) findViewById(R.id.btnGet);
+        btnGet.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
 
-                //Intent是一种运行时绑定（run-time binding）机制，它能在程序运行过程中连接两个不同的组件。
-
-                //page1为先前已添加的类，并已在AndroidManifest.xml内添加活动事件(<activity android:name="page1"></activity>),在存放资源代码的文件夹下下，
-                //Intent i = new Intent();
-                Intent intent=new Intent(MainActivity.this,Main2Activity.class);
-                startActivity(intent);
-                // i.setAction(Intent.ACTION_MAIN);
-                //i.addCategory(Intent.CATEGORY_HOME);
-                ////启动
-                //startActivity(i);
+                GetPostUtil get=new GetPostUtil();
+                show.setText(get.sendGet());
             }
         });
-        btn3=(Button) findViewById(R.id.btnPost);
-        btn3.setOnClickListener(new View.OnClickListener(){
+
+        btnPost=(Button) findViewById(R.id.btnPost);
+        btnPost.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+                GetPostUtil get=new GetPostUtil();
+                show.setText(get.sendPost());
 
-                //Intent是一种运行时绑定（run-time binding）机制，它能在程序运行过程中连接两个不同的组件。
-
-                //page1为先前已添加的类，并已在AndroidManifest.xml内添加活动事件(<activity android:name="page1"></activity>),在存放资源代码的文件夹下下，
-                //Intent i = new Intent();
-                Intent intent=new Intent(MainActivity.this,Main2Activity.class);
-                startActivity(intent);
-                // i.setAction(Intent.ACTION_MAIN);
-                //i.addCategory(Intent.CATEGORY_HOME);
-                ////启动
-                //startActivity(i);
             }
         });
-        btn4=(Button) findViewById(R.id.btnSocket);
-        btn4.setOnClickListener(new View.OnClickListener(){
+
+        ///Socket 按钮
+        btnSocket=(Button) findViewById(R.id.btnSocket);
+        btnSocket.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
 
-                //Intent是一种运行时绑定（run-time binding）机制，它能在程序运行过程中连接两个不同的组件。
-
-                //page1为先前已添加的类，并已在AndroidManifest.xml内添加活动事件(<activity android:name="page1"></activity>),在存放资源代码的文件夹下下，
-                //Intent i = new Intent();
-                Intent intent=new Intent(MainActivity.this,Main2Activity.class);
-                startActivity(intent);
-                // i.setAction(Intent.ACTION_MAIN);
-                //i.addCategory(Intent.CATEGORY_HOME);
-                ////启动
-                //startActivity(i);
+                handler =new Handler()
+                {
+                    @Override
+                    public void handleMessage(Message msg)
+                    {
+                        if(msg.what==0x123)
+                        {
+                            show.append("\n"+msg.obj.toString());
+                        }
+                    }
+                };
+                socketClinet = new SocketClinet(handler);
+                new Thread(socketClinet).start();
+                send.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try{
+                            Message msg=new Message();
+                            msg.what=0x345;
+                            msg.obj =input.getText().toString();
+                            socketClinet.revHandler.sendMessage(msg);
+                            input.setText("");
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace();
+                        }
+                    }
+                });
             }
         });
     }
-    private Button btn1;
-    private Button btn2;
-    private Button btn3;
-    private Button btn4;
+    private Button btnJump;
+    private Button btnGet;
+    private Button btnPost;
+    private Button btnSocket;
+    private Handler handler;
+    private TextView show;
+    private SocketClinet socketClinet;
+    private EditText input;
+    private Button send;
 }
