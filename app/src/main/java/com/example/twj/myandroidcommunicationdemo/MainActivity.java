@@ -19,6 +19,17 @@ import Socket.SocketClinet;
 
 public class MainActivity extends AppCompatActivity {
 
+    Handler handler =new Handler()
+    {
+        @Override
+        public void handleMessage(Message msg)
+        {
+            if(msg.what==0x123)
+            {
+                show.setText(response.toString()+"\n"+msg.toString());
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,20 +60,30 @@ public class MainActivity extends AppCompatActivity {
         btnGet=(Button) findViewById(R.id.btnGet);
         btnGet.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v){
-
-                GetPostUtil get=new GetPostUtil();
-                show.setText(get.sendGet());
+            public void onClick(View v) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        GetPostUtil get = new GetPostUtil();
+                        show.setText(get.sendGet());
+                        handler.sendEmptyMessage(0x123);
+                    }
+                }.start();
             }
         });
 
         btnPost=(Button) findViewById(R.id.btnPost);
         btnPost.setOnClickListener(new View.OnClickListener(){
             @Override
-            public void onClick(View v){
-                GetPostUtil get=new GetPostUtil();
-                show.setText(get.sendPost());
-
+            public void onClick(View v) {
+                new Thread() {
+                    @Override
+                    public void run() {
+                        GetPostUtil get = new GetPostUtil();
+                        show.setText(get.sendPost());
+                        handler.sendEmptyMessage(0x123);
+                    }
+                }.start();
             }
         });
 
@@ -71,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         btnSocket.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-
+/*
                 handler =new Handler()
                 {
                     @Override
@@ -82,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
                             show.append("\n"+msg.obj.toString());
                         }
                     }
-                };
+                };*/
                 socketClinet = new SocketClinet(handler);
                 new Thread(socketClinet).start();
                 send.setOnClickListener(new OnClickListener() {
@@ -104,11 +125,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    String response;
     private Button btnJump;
     private Button btnGet;
     private Button btnPost;
     private Button btnSocket;
-    private Handler handler;
     private TextView show;
     private SocketClinet socketClinet;
     private EditText input;

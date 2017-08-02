@@ -17,7 +17,6 @@ import java.util.List;
  import org.apache.http.message.BasicNameValuePair;
  import org.apache.http.util.EntityUtils;
  */
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.StrictMode;
@@ -31,62 +30,55 @@ public class GetPostUtil {
 
 
     public static String sendGet() {
+        String  result="";
+        BufferedReader in=null;
         try {
-            //配置 HttpURLConnection
 
             //TODO 这里的ip 地址一定不能使localhost 一定要是电脑的或者是正式ip地址.
-            //如果写成了localhost，那么就会报错java.net.ConnectException: localhost/127.0.0.1:8080 - Connection refused
-            //URL url = new URL("http://localhost:8080/tomcat.png");
-
-            String resultString = null;
-            HttpURLConnection conn = null;
-            InputStream inputStream = null;
-            ByteArrayOutputStream bos = null;
-
-
-            String srcUrl = "http://localhost:35444/api/values";
-            URL url = new URL(srcUrl);
-            conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(10000);
-            conn.setRequestMethod("GET");
-            // 请求头必须设置，参数必须正确。
-            conn.setRequestProperty("Accept", "application/json,text/html;q=0.9,image/webp,*/*;q=0.8");
-            conn.setRequestProperty("Cache-Control", "max-age=0");
-            conn.setDoInput(true);
-            conn.setDoOutput(false);
-
+            result = "http://192.168.1.117:8011/api/values";
+            URL realUrl = new URL(result);
+            URLConnection conn=realUrl.openConnection();
+            conn.setRequestProperty("accept","*/*");
+            conn.setRequestProperty("connection","Keep-Alive");
+            conn.setRequestProperty("user-agent",
+                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
             conn.connect();
-
-            int responseCode = conn.getResponseCode();
-
-
-            bos = new ByteArrayOutputStream();
-            byte[] buffer = new byte[10240];
-            int len = -1;
-            while ((len = inputStream.read(buffer)) != -1) {
-                bos.write(buffer, 0, len);
+            Map<String, List<String>> map = conn.getHeaderFields();
+            // 遍历所有的响应头字段
+            for (String key : map.keySet())
+            {
+                System.out.println(key + "--->" + map.get(key));
             }
-            bos.flush();
-            byte[] resultByte = bos.toByteArray();
+            // 定义BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null)
+            {
+                result += "\n" + line;
+            }
 
-            resultString = new String(resultByte);
-            return resultString;
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return e.toString();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return e.toString();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-            return e.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return e.toString();
         }
-
+        catch(Exception e)
+        {
+            System.out.println("发送GET请求出现异常！" + e);
+            e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                if (in != null)
+                {
+                    in.close();
+                }
+            }
+            catch (IOException ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+        return  result;
     }
 
 
@@ -95,80 +87,66 @@ public class GetPostUtil {
 
      * @return URL所代表远程资源的响应
      */
-    public static String sendPost()
-    {
-        URL realUrl = null;
-        try {
-            //定义存储要提交的数据的Map
-            //如果 仅仅是为了测试那么直接使用
-            //测试的请求+++++++++++++开始+++++++++++++++
-            //StringBuilder sb = new StringBuilder("username=哈哈&password=psw");
-            //测试的请求++++++++++++++结束++++++++++++++
-
-            //如果为了模拟真实的请求，那么就使用下面的
-            //模拟真实的请求+++++++++++++开始+++++++++++++++
-            HashMap<String,String> params1 = new HashMap<String,String>();
-            params1.put("username", "哈哈");
-            params1.put("password", "psw");
-            //把要提交的 数据类型定义为 username=哈哈&password=psw的格式
-            StringBuilder sb = new StringBuilder();
-            //通过Map的遍历的到
-            for(Map.Entry<String,String> en:params1.entrySet()){
-                sb.append(en.getKey())
-                        .append("=")
-                        .append(URLEncoder.encode(en.getValue(), "utf-8"))
-                        .append("&");
+    public static String sendPost() {
+        PrintWriter out = null;
+        BufferedReader in = null;
+        String result = "";
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("username", "哈哈");
+        params.put("password", "psw");
+        try
+        {
+            URL realUrl = new URL("http://192.168.1.117:8011/api/values");
+            // 打开和URL之间的连接
+            URLConnection conn = realUrl.openConnection();
+            // 设置通用的请求属性
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
+            conn.setRequestProperty("user-agent",
+                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
+            // 发送POST请求必须设置如下两行
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            // 获取URLConnection对象对应的输出流
+            out = new PrintWriter(conn.getOutputStream());
+            // 发送请求参数
+            out.print(params);  //②
+            // flush输出流的缓冲
+            out.flush();
+            // 定义BufferedReader输入流来读取URL的响应
+            in = new BufferedReader(
+                    new InputStreamReader(conn.getInputStream()));
+            String line;
+            while ((line = in.readLine()) != null)
+            {
+                result += "\n" + line;
             }
-            //删除最后一个&,注意 这里是 length-1，因为是从0开始计数的。
-            sb.deleteCharAt(sb.length()-1);
-            //模拟真实的请求++++++++++++++结束++++++++++++++
-
-            realUrl = new URL("http://192.168.1.106:8080/ServerDemo/servlet/LoginServlert");
-            HttpURLConnection urlConnection = (HttpURLConnection)realUrl.openConnection();
-
-            urlConnection.setRequestMethod("POST");
-            urlConnection.setConnectTimeout(5000);
-            urlConnection.setDoInput(true);
-            urlConnection.setDoOutput(true);//设置可以向服务器传递数据
-
-            //设置提交的内容的类型
-            urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
-
-            //设置提交的内容的长度
-            byte[] data = sb.toString().getBytes("utf-8");//注意这里的编码utf-8
-            urlConnection.setRequestProperty("Content-Length", String.valueOf(data.length));
-
-            //提交数据
-            OutputStream outputStream = urlConnection.getOutputStream();
-            outputStream.write(data);
-            outputStream.close();
-
-
-            //判断服务器端的响应码是不是200
-            InputStream in = null;
-            if(urlConnection.getResponseCode()==200){
-                in = urlConnection.getInputStream();
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                byte[] arr = new byte[1024];
-                int len=0;
-                while((len=in.read(arr))!=-1){
-                    bos.write(arr,0,len);
-                }
-
-                byte[] b = bos.toByteArray();
-                String ss = new String(b,"utf-8");
-                return ss;
-            }
-            //关闭流
-            in.close();
-            return "";
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-            return e.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return  e.toString();
         }
+        catch (Exception e)
+        {
+            System.out.println("发送POST请求出现异常！" + e);
+            e.printStackTrace();
+        }
+        // 使用finally块来关闭输出流、输入流
+        finally
+        {
+            try
+            {
+                if (out != null)
+                {
+                    out.close();
+                }
+                if (in != null)
+                {
+                    in.close();
+                }
+            }
+            catch (IOException ex)
+            {
+                ex.printStackTrace();
+            }
+        }
+        return result;
     }
+
 }
