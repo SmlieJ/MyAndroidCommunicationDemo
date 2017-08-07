@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import GetPost.GetPostUtil;
 import Socket.SocketClinet;
+import Token.ServerGetPostUtil;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -64,8 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 new Thread() {
                     @Override
                     public void run() {
-                        GetPostUtil get = new GetPostUtil();
-                        show.setText(get.sendGet());
+                        ServerGetPostUtil get = new ServerGetPostUtil();
+                        show.setText(get.sendGet("","","",0,false));
                         handler.sendEmptyMessage(0x123);
                     }
                 }.start();

@@ -1,47 +1,44 @@
-package GetPost;
-import java.io.*;
-import java.net.*;
-import java.util.*;
+package Token;
+
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
- import org.apache.http.HttpResponse;
- import org.apache.http.client.ClientProtocolException;
- import org.apache.http.client.HttpClient;
- import org.apache.http.client.entity.UrlEncodedFormEntity;
- import org.apache.http.client.methods.HttpPost;
- import org.apache.http.impl.client.DefaultHttpClient;
- import org.apache.http.message.BasicNameValuePair;
- import org.apache.http.util.EntityUtils;
- */
-import android.app.Activity;
-import android.os.Bundle;
-import android.os.StrictMode;
-import android.widget.TextView;
-/**
- * Created by Twj on 2017/6/21.
+ * Created by TOSHIBA on 2017/8/7.
  */
 
-public class GetPostUtil {
-
-
-
-    public static String sendGet() {
+public class ServerGetPostUtil {
+    public static String sendGet(String webApi,String query,String queryStr,int staffId,boolean sign) {
         String  result="";
         BufferedReader in=null;
         try {
+             String timeStamp=Token.GetTimeStamp();
+            String nonce=Token.GetRandom();
             //TODO 这里的ip 地址一定不能使localhost 一定要是电脑的或者是正式ip地址.
-            result = "http://192.168.1.117:8011/api/values";
+            result = "http://192.168.3.26:6100/api/values"+"?"+queryStr;
             URL realUrl = new URL(result);
-            URLConnection conn=realUrl.openConnection();
+            HttpURLConnection conn=(HttpURLConnection)realUrl.openConnection();
+
+            conn.setRequestProperty("staffid",String.valueOf(staffId));
+            conn.setRequestProperty("timestamp",timeStamp);
+            conn.setRequestProperty("nonce",nonce);
+        /*    conn.setRequestProperty("signaturn",);*/
+            
             conn.setRequestProperty("accept","*/*");
             conn.setRequestProperty("connection","Keep-Alive");
             conn.setRequestProperty("user-agent",
                     "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
             conn.connect();
+
             Map<String, List<String>> map = conn.getHeaderFields();
             // 遍历所有的响应头字段
             for (String key : map.keySet())
@@ -147,5 +144,4 @@ public class GetPostUtil {
         }
         return result;
     }
-
 }
