@@ -1,11 +1,17 @@
 package Token;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONStringer;
+
+import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.IdentityHashMap;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
@@ -19,13 +25,26 @@ import java.util.Calendar;
 public class Token {
 
 
-    String tokenApi="http://localhost:7250/api/Service/GetToken";
+
     public static void GetSignToken(int ID)
     {
-        String staffId="10000";
+        String tokenApi="http://localhost:7250/api/Service/GetToken";
+        int staffId=10000;
         HashMap<String,String>  parames=new HashMap<String,String>();
-        parames.put("staffId",staffId.toString());
+        parames.put("staffId",String.valueOf( staffId));
         HashMap<String,String> parameters=GetQuerString(parames);
+        String token=ServerGetPostUtil.sendGet(tokenApi,parameters.keySet().toString(),parameters.values().toString(),staffId,false);
+        List<Model.Token> bList=new ArrayList<Model.Token>();
+        try
+        {
+            Object t=new JSONObject(token);
+            Model.Token token1;
+      /*      token1.setData();*/
+        }
+        catch(JSONException e)
+        {
+            e.printStackTrace();
+        }
 
     }
 

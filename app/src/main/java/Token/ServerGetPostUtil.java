@@ -51,7 +51,7 @@ public class ServerGetPostUtil {
             String line;
             while ((line = in.readLine()) != null)
             {
-                result += "\n" + line;
+                result =line;
             }
 
         }
@@ -115,7 +115,7 @@ public class ServerGetPostUtil {
             String line;
             while ((line = in.readLine()) != null)
             {
-                result += "\n" + line;
+                result =  line;
             }
         }
         catch (Exception e)
