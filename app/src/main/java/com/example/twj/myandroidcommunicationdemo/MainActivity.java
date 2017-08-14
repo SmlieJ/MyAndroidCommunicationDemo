@@ -80,9 +80,11 @@ public class MainActivity extends AppCompatActivity {
                 new Thread() {
                     @Override
                     public void run() {
-                        GetPostUtil get = new GetPostUtil();
+                       /* GetPostUtil get = new GetPostUtil();
                         show.setText(get.sendPost());
-                        handler.sendEmptyMessage(0x123);
+                        handler.sendEmptyMessage(0x123);*/
+                       Token.Token ken=new Token.Token();
+                        ken.GetSignToken(10);
                     }
                 }.start();
             }

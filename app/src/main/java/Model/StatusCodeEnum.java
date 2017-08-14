@@ -16,12 +16,13 @@ public enum  StatusCodeEnum {
     URLExpireError(407);
     private  StatusCodeEnum(int i)
     {
-         Num=i;
+       this.Num=i;
     }
-    public String tostring()
+    public int tostring()
     {
-        return  super.toString()+Num;
+        return  Num;
     }
+
     private int Num;
 }
 

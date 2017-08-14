@@ -12,6 +12,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static Token.Token.GetRandom;
+import static Token.Token.GetSignature;
+import static Token.Token.GetTimeStamp;
+
 /**
  * Created by TOSHIBA on 2017/8/7.
  */
@@ -21,8 +25,8 @@ public class ServerGetPostUtil {
         String  result="";
         BufferedReader in=null;
         try {
-             String timeStamp=Token.GetTimeStamp();
-            String nonce=Token.GetRandom();
+             String timeStamp= GetTimeStamp();
+            String nonce= GetRandom();
             //TODO 这里的ip 地址一定不能使localhost 一定要是电脑的或者是正式ip地址.
             result = "http://192.168.3.26:6100/api/values"+"?"+queryStr;
             URL realUrl = new URL(result);
@@ -31,7 +35,7 @@ public class ServerGetPostUtil {
             conn.setRequestProperty("staffid",String.valueOf(staffId));
             conn.setRequestProperty("timestamp",timeStamp);
             conn.setRequestProperty("nonce",nonce);
-        /*    conn.setRequestProperty("signaturn",);*/
+            conn.setRequestProperty("signaturn",GetSignature(timeStamp,nonce,staffId,query));
             
             conn.setRequestProperty("accept","*/*");
             conn.setRequestProperty("connection","Keep-Alive");
@@ -83,7 +87,7 @@ public class ServerGetPostUtil {
 
      * @return URL所代表远程资源的响应
      */
-    public static String sendPost() {
+    public static String sendPost(String url,String data,int staffId) {
         PrintWriter out = null;
         BufferedReader in = null;
         String result = "";
@@ -95,6 +99,13 @@ public class ServerGetPostUtil {
             URL realUrl = new URL("http://192.168.3.26:6100/api/values");
             // 打开和URL之间的连接
             URLConnection conn = realUrl.openConnection();
+
+            String timeStamp = GetTimeStamp();
+            String nonce = GetRandom();
+            conn.setRequestProperty("staffid",String.valueOf(staffId));
+            conn.setRequestProperty("timestamp",timeStamp);
+            conn.setRequestProperty("nonce",nonce);
+            conn.setRequestProperty("signaturn",GetSignature(timeStamp,nonce,staffId,data));
             // 设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");
             conn.setRequestProperty("connection", "Keep-Alive");

@@ -1,23 +1,25 @@
 package Token;
 
+import android.util.Base64;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.Dictionary;
-import java.util.Enumeration;
-import java.util.Hashtable;
-import java.util.IdentityHashMap;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
 import java.util.Random;
-import java.util.Timer;
-import java.util.Date;
+
 import java.util.Calendar;
+import java.security.MessageDigest;
+import Model.StatusCodeEnum;
+
 /**
  * Created by TOSHIBA on 2017/8/6.
  */
@@ -26,7 +28,7 @@ public class Token {
 
 
 
-    public static void GetSignToken(int ID)
+    public static   Model.Token  GetSignToken(int ID)
     {
         String tokenApi="http://localhost:7250/api/Service/GetToken";
         int staffId=10000;
@@ -37,21 +39,33 @@ public class Token {
         List<Model.Token> bList=new ArrayList<Model.Token>();
         try
         {
-            Object t=new JSONObject(token);
-            Model.Token token1;
-      /*      token1.setData();*/
+            JSONObject t=new JSONObject(token);
+            JSONObject t1=new JSONObject(t.getString("Date"));
+
+            Model.Token token1=new Model.Token();
+            Model.Token.DataBean databean=new Model.Token.DataBean();
+
+            databean.setExpireTime(t1.getString("ExpireTime"));
+            databean.setSignToken(t1.getString("SignToken"));
+            databean.setStaffId(Integer.parseInt(t1.getString("StaffId")));
+
+            token1.setInfo(t.getString("Info"));
+            token1.setStatusCode(Integer.parseInt(t.getString("StatusCode")));
+            token1.setData(databean);
+            return token1;
         }
         catch(JSONException e)
         {
             e.printStackTrace();
+            return null;
         }
 
     }
 
     public static HashMap<String,String> GetQuerString(HashMap<String,String> parames)
     {
-         Map map=parames;
-         Iterator iter=map.entrySet().iterator();
+        Map map=parames;
+        Iterator iter=map.entrySet().iterator();
         StringBuilder query=new StringBuilder("");
         StringBuilder queryStr=new StringBuilder("");
         if (parames.size()==0)
@@ -89,12 +103,53 @@ public class Token {
         return Integer.toString(num);
     }
 
-    public static String GetSignaturn(String timeStamp,String nonce,int staffID,String date)
+    public static String GetSignature(String timeStamp,String nonce,int staffID,String date)
     {
-          Token token=null;
-     /*    Object resultMsg=GetSignToken(staffID);*/
-     return "";
+        Model.Token token=null;
+        Model.Token resultMsg= GetSignToken(staffID);
+        if(resultMsg!=null)
+        {
+            if(resultMsg.getStatusCode()!= StatusCodeEnum.Success.tostring())
+            {
+                try {
+                    throw new Exception(resultMsg.getData().toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            else
+            {
+                token=resultMsg;
+            }
+        }
+        else
+        {
+            try {
+                throw new Exception("token为null，员工编号为：" +staffID);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        String signStr=timeStamp+nonce+staffID+  token.getData().getSignToken()+date;
+        return encode(signStr);
     }
 
-
+    public static String encode(String str) {
+        StringBuffer buffer = new StringBuffer();
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] digest = md.digest(str.getBytes());
+            for (byte b : digest) {
+                int x = b & 0xff;  // 将byte转换2位的16进制int类型数
+                String s = Integer.toHexString(x); // 将一个int类型的数转为2位的十六进制数
+                if (s.length() == 1) {
+                    s = "0" + s;
+                }
+                buffer.append(s);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return buffer.toString();
+    }
 }
