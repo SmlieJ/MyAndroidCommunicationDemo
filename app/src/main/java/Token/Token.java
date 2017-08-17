@@ -30,11 +30,11 @@ public class Token {
 
     public static   Model.Token  GetSignToken(int ID)
     {
-        String tokenApi="http://localhost:7250/api/Service/GetToken";
+        String tokenApi="http://192.168.3.26:6100/api/Service/GetToken";
         int staffId=10000;
         HashMap<String,String>  parames=new HashMap<String,String>();
         parames.put("staffId",String.valueOf( staffId));
-        HashMap<String,String> parameters=GetQuerString(parames);
+        HashMap<String,String> parameters=GetQueryString(parames);
         String token=ServerGetPostUtil.sendGet(tokenApi,parameters.keySet().toString(),parameters.values().toString(),staffId,false);
         List<Model.Token> bList=new ArrayList<Model.Token>();
         try
@@ -62,7 +62,7 @@ public class Token {
 
     }
 
-    public static HashMap<String,String> GetQuerString(HashMap<String,String> parames)
+    public static HashMap<String,String> GetQueryString(HashMap<String,String> parames)
     {
         Map map=parames;
         Iterator iter=map.entrySet().iterator();
@@ -75,7 +75,7 @@ public class Token {
             Map.Entry entry=(Map.Entry)iter.next();
             String key=entry.getKey().toString();
             String val=entry.getValue().toString();
-            if(key.isEmpty())
+            if(!key.isEmpty())
             {
                 query.append(key).append(val);
                 queryStr.append("&").append(key).append("=").append(val);

@@ -14,6 +14,8 @@ import android.os.Message;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
 
+import java.util.HashMap;
+
 import GetPost.GetPostUtil;
 import Socket.SocketClinet;
 import Token.ServerGetPostUtil;
@@ -84,7 +86,14 @@ public class MainActivity extends AppCompatActivity {
                         show.setText(get.sendPost());
                         handler.sendEmptyMessage(0x123);*/
                        Token.Token ken=new Token.Token();
-                        ken.GetSignToken(10);
+                       Model.Token ee=  ken.GetSignToken(10);
+                        HashMap<String, String> params = new HashMap<String, String>();
+                        params.put("ID", "1");
+                        params.put("Name", "admin");
+                        HashMap<String,String> parames= ken.GetQueryString(params);
+                        Object Obj=ServerGetPostUtil.sendGet("http://192.168.3.26:6100/api/emp/Get",parames.keySet().toString(),parames.values().toString(),10000,true);
+                        String Json="{id=1,Name=\"安慕希\",Cont=10,Price=58.5}";
+                        Object Obj2=ServerGetPostUtil.sendPost("http://192.168.3.26:6100/api/emp/Post",Json,10000);
                     }
                 }.start();
             }
