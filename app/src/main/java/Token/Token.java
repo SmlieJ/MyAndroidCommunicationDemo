@@ -35,12 +35,12 @@ public class Token {
         HashMap<String,String>  parames=new HashMap<String,String>();
         parames.put("staffId",String.valueOf( staffId));
         HashMap<String,String> parameters=GetQueryString(parames);
-        String token=ServerGetPostUtil.sendGet(tokenApi,parameters.keySet().toString(),parameters.values().toString(),staffId,false);
+        String token="{"+ServerGetPostUtil.sendGet(tokenApi,parameters.keySet().toString(),parameters.values().toString(),staffId,false);
         List<Model.Token> bList=new ArrayList<Model.Token>();
         try
         {
             JSONObject t=new JSONObject(token);
-            JSONObject t1=new JSONObject(t.getString("Date"));
+            JSONObject t1=new JSONObject(t.getString("Data"));
 
             Model.Token token1=new Model.Token();
             Model.Token.DataBean databean=new Model.Token.DataBean();
