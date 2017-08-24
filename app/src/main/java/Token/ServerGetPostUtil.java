@@ -27,20 +27,21 @@ public class ServerGetPostUtil {
         String  result="";
         BufferedReader in=null;
         try {
-             String timeStamp= GetTimeStamp();
-            String nonce= GetRandom();
+            String timeStamp = GetTimeStamp();
+/*            String nonce= GetRandom();*/
+            String nonce = "1534693224";
             //TODO 这里的ip 地址一定不能使localhost 一定要是电脑的或者是正式ip地址.
-            result = webApi+"?"+queryStr;
+            result = webApi + "?" + queryStr;
             URL realUrl = new URL(result);
-            HttpURLConnection conn=(HttpURLConnection)realUrl.openConnection();
-            conn.setRequestProperty("staffid",String.valueOf(staffId));
-            conn.setRequestProperty("timestamp",timeStamp);
-            conn.setRequestProperty("nonce",nonce);
-            if(sign)
-            conn.setRequestProperty("signaturn",GetSignature(timeStamp,nonce,staffId,query));
-            
-            conn.setRequestProperty("accept","*/*");
-            conn.setRequestProperty("connection","Keep-Alive");
+            HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
+            conn.setRequestProperty("staffid", String.valueOf(staffId));
+            conn.setRequestProperty("timestamp", timeStamp);
+            conn.setRequestProperty("nonce", nonce);
+            if (sign)
+                conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, staffId, query));
+
+            conn.setRequestProperty("accept", "*/*");
+            conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("user-agent",
                     "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
             conn.setDoInput(true);
@@ -60,13 +61,12 @@ public class ServerGetPostUtil {
             {
                 result =line;
             }*/
-Object jj=conn.getInputStream().read();
+   /*         Object jj = conn.getInputStream().read();*/
             in = new BufferedReader(
                     new InputStreamReader(conn.getInputStream()));
             String line;
-            while ((line = in.readLine()) != null)
-            {
-                result =  line;
+            while ((line = in.readLine()) != null) {
+                result = line;
             }
 
         }

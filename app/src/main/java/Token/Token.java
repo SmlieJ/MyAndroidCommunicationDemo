@@ -6,9 +6,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
+import java.lang.reflect.Array;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,12 +32,12 @@ public class Token {
 
     public static   Model.Token  GetSignToken(int ID)
     {
-        String tokenApi="http://192.168.3.26:6100/api/Service/GetToken";
+        String tokenApi="http://1dfdb357.ngrok.io/api/Service/GetToken";
         int staffId=10000;
         HashMap<String,String>  parames=new HashMap<String,String>();
         parames.put("staffId",String.valueOf( staffId));
         HashMap<String,String> parameters=GetQueryString(parames);
-        String token="{"+ServerGetPostUtil.sendGet(tokenApi,parameters.keySet().toString(),parameters.values().toString(),staffId,false);
+        String token=ServerGetPostUtil.sendGet(tokenApi,parameters.keySet().toString(),parameters.values().toString(),staffId,false);
         List<Model.Token> bList=new ArrayList<Model.Token>();
         try
         {
@@ -82,7 +84,7 @@ public class Token {
             }
         }
         HashMap<String,String> map1=new HashMap<String,String>();
-        map1.put(query.toString(),queryStr.toString().substring(1,queryStr.length()-1));
+        map1.put(query.toString(),queryStr.toString().substring(1,queryStr.length()));
         return map1;
     }
 
@@ -91,7 +93,7 @@ public class Token {
         Calendar datetime =Calendar.getInstance();
         datetime.setTime(new java.util.Date());
         Calendar calendar=Calendar.getInstance();
-        calendar.set(1970,1,1,0,0,0);
+        calendar.set(1990,1,1,0,0,0);
         String betwwen=String.valueOf(datetime.getTime().getTime()-calendar.getTime().getTime());
         return  betwwen;
     }
@@ -131,9 +133,19 @@ public class Token {
             }
         }
         String signStr=timeStamp+nonce+staffID+  token.getData().getSignToken()+date;
+        String[] sin=new String[1];
+        sin[0]=signStr;
+        Arrays.sort(sin);
+        for(String str:sin)
+        {
+            signStr=str;
+        }
         return encode(signStr);
     }
 
+
+
+    ///MD5加密
     public static String encode(String str) {
         StringBuffer buffer = new StringBuffer();
         try {

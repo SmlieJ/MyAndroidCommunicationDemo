@@ -88,12 +88,12 @@ public class MainActivity extends AppCompatActivity {
                        Token.Token ken=new Token.Token();
                        Model.Token ee=  ken.GetSignToken(10);
                         HashMap<String, String> params = new HashMap<String, String>();
-                        params.put("ID", "1");
-                        params.put("Name", "admin");
+                        params.put("id", "1");
+                        params.put("name", "wahaha");
                         HashMap<String,String> parames= ken.GetQueryString(params);
-                        Object Obj=ServerGetPostUtil.sendGet("http://192.168.3.26:6100/api/emp/Get",parames.keySet().toString(),parames.values().toString(),10000,true);
+                        Object Obj=ServerGetPostUtil.sendGet("http://1dfdb357.ngrok.io/api/emp/Get",parames.keySet().toString(),parames.values().toString(),10000,true);
                         String Json="{id=1,Name=\"安慕希\",Cont=10,Price=58.5}";
-                        Object Obj2=ServerGetPostUtil.sendPost("http://192.168.3.26:6100/api/emp/Post",Json,10000);
+                        Object Obj2=ServerGetPostUtil.sendPost("http://1dfdb357.ngrok.io/api/emp/Post",Json,10000);
                     }
                 }.start();
             }
