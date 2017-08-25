@@ -91,9 +91,9 @@ public class MainActivity extends AppCompatActivity {
                         params.put("id", "1");
                         params.put("name", "wahaha");
                         HashMap<String,String> parames= ken.GetQueryString(params);
-                        Object Obj=ServerGetPostUtil.sendGet("http://1dfdb357.ngrok.io/api/emp/Get",parames.keySet().toString(),parames.values().toString(),10000,true);
+                        Object Obj=ServerGetPostUtil.sendGet("http://d24b0bd6.ngrok.io/api/emp/Get",parames.keySet().toString(),parames.values().toString(),10000,true);
                         String Json="{id=1,Name=\"安慕希\",Cont=10,Price=58.5}";
-                        Object Obj2=ServerGetPostUtil.sendPost("http://1dfdb357.ngrok.io/api/emp/Post",Json,10000);
+                        Object Obj2=ServerGetPostUtil.sendPost("http://d24b0bd6.ngrok.io/api/emp/Post",Json,10000);
                     }
                 }.start();
             }

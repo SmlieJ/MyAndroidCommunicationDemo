@@ -46,22 +46,6 @@ public class ServerGetPostUtil {
                     "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1; SV1)");
             conn.setDoInput(true);
             conn.connect();
-/*
-            Map<String, List<String>> map = conn.getHeaderFields();
-            // 遍历所有的响应头字段
-            for (String key : map.keySet())
-            {
-                System.out.println(key + "--->" + map.get(key));
-            }
-            // 定义BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(
-                    new InputStreamReader(conn.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null)
-            {
-                result =line;
-            }*/
-   /*         Object jj = conn.getInputStream().read();*/
             in = new BufferedReader(
                     new InputStreamReader(conn.getInputStream()));
             String line;
@@ -105,7 +89,7 @@ public class ServerGetPostUtil {
 
         try
         {
-            URL realUrl = new URL("http://192.168.3.26:6100/api/values");
+            URL realUrl = new URL(url);
             // 打开和URL之间的连接
             URLConnection conn = realUrl.openConnection();
 
@@ -114,7 +98,8 @@ public class ServerGetPostUtil {
             conn.setRequestProperty("staffid",String.valueOf(staffId));
             conn.setRequestProperty("timestamp",timeStamp);
             conn.setRequestProperty("nonce",nonce);
-            conn.setRequestProperty("signaturn",GetSignature(timeStamp,nonce,staffId,data));
+            conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, staffId, data));
+
             // 设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");
             conn.setRequestProperty("connection", "Keep-Alive");
