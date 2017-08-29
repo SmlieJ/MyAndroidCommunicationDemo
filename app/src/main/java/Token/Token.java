@@ -32,7 +32,7 @@ public class Token {
 
     public static   Model.Token  GetSignToken(int ID)
     {
-        String tokenApi="http://d24b0bd6.ngrok.io/api/Service/GetToken";
+        String tokenApi="http://192.168.3.26:6100/api/Service/GetToken";
         int staffId=10000;
         HashMap<String,String>  parames=new HashMap<String,String>();
         parames.put("staffId",String.valueOf( staffId));
