@@ -32,7 +32,7 @@ public class Token {
 
     public static   Model.Token  GetSignToken(int ID)
     {
-        String tokenApi="http://192.168.3.26:6100/api/Service/GetToken";
+        String tokenApi="http://cd502263.ngrok.io/api/Service/GetToken";
         int staffId=10000;
         HashMap<String,String>  parames=new HashMap<String,String>();
         parames.put("staffId",String.valueOf( staffId));
@@ -93,7 +93,7 @@ public class Token {
         Calendar datetime =Calendar.getInstance();
         datetime.setTime(new java.util.Date());
         Calendar calendar=Calendar.getInstance();
-        calendar.set(1990,1,1,0,0,0);
+        calendar.set(1970,1,1,0,0,0);
         String betwwen=String.valueOf(datetime.getTime().getTime()-calendar.getTime().getTime());
         return  betwwen;
     }
@@ -132,7 +132,7 @@ public class Token {
                 e.printStackTrace();
             }
         }
-        String signStr=timeStamp+nonce+staffID+  token.getData().getSignToken()+date;
+        String signStr=timeStamp+nonce+staffID+  token.getData().getSignToken();
         String[] sin=signStr.split("");
         Arrays.sort(sin,String.CASE_INSENSITIVE_ORDER);
         String ss="";
@@ -143,6 +143,15 @@ public class Token {
         return encode(ss).toUpperCase();
     }
 
+    public static String toHexString(String s) {
+        String str = "";
+        for (int i = 0; i < s.length(); i++) {
+            int ch = (int) s.charAt(i);
+            String s4 = Integer.toHexString(ch);
+            str = str + s4;
+        }
+        return str;
+    }
 
 
     ///MD5加密
