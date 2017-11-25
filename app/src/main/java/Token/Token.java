@@ -35,7 +35,7 @@ public class Token {
 
     public static   Model.Token  GetSignToken(String Name,String password)
     {
-        String tokenApi="http://cd502263.ngrok.io/api/Service/GetToken";
+        String tokenApi="http://7a4c3864.ngrok.io/api/Service/GetToken";
         String staffName=Name;
         HashMap<String,String>  parames=new HashMap<String,String>();
         parames.put("staffName",String.valueOf( staffName));
@@ -136,8 +136,8 @@ public class Token {
                 e.printStackTrace();
             }
         }
-        String signStr=timeStamp+nonce+staffName+  token.getData().getSignToken();
-        String[] sin=signStr.split("");
+        String signStr=timeStamp+nonce+  token.getData().getSignToken()+staffName+date;
+        String[] sin=signStr.toUpperCase().split("");
         Arrays.sort(sin,String.CASE_INSENSITIVE_ORDER);
         String ss="";
         for(String str:sin)

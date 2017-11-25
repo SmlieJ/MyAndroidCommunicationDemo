@@ -34,17 +34,17 @@ public class Main2Activity extends AppCompatActivity {
                        // handler.sendEmptyMessage(0x123);
 
                          Token.Token ken=new Token.Token();
-                         String Name=TextName.getText().toString();
+                         String Name=TextName.getText().toString().toUpperCase();
                         String Password=ken.encodeg(TextPassword.getText().toString());
-                         Model.Token ee=  ken.GetSignToken(Name.toString(),Password.toString());
+                        Model.Token ee=  ken.GetSignToken(Name.toString(),Password.toString());
                         HashMap<String, String> params = new HashMap<String, String>();
                         params.put("id", "1");
                         params.put("name", "wahaha");
                         HashMap<String,String> parames= ken.GetQueryString(params);
-                        Object Obj=ServerGetPostUtil.sendGet("http://cd502263.ngrok.io/api/product/getproduct",parames.keySet().toString()
+                        Object Obj=ServerGetPostUtil.sendGet("http://7a4c3864.ngrok.io/api/product/getproduct",parames.keySet().toString()
                                 ,parames.values().toString(),Name,Password.toString(),true);
                         String Json="{\"id\":1,\"Name\":\"安慕希\",\"Cont\":10,\"Price\":58.5}";
-                        Object Obj2=ServerGetPostUtil.sendPost("http://cd502263.ngrok.io/api/product/addProduct",Json,
+                        Object Obj2=ServerGetPostUtil.sendPost("http://7a4c3864.ngrok.io/api/product/addProduct",Json,
                                 Name ,Password.toString());
                     }
                 }.start();
