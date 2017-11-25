@@ -1,11 +1,13 @@
 package Token;
 
+import android.text.format.DateUtils;
 import android.util.Base64;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
@@ -30,14 +32,16 @@ public class Token {
 
 
 
-    public static   Model.Token  GetSignToken(int ID)
+
+    public static   Model.Token  GetSignToken(String Name,String password)
     {
         String tokenApi="http://cd502263.ngrok.io/api/Service/GetToken";
-        int staffId=10000;
+        String staffName=Name;
         HashMap<String,String>  parames=new HashMap<String,String>();
-        parames.put("staffId",String.valueOf( staffId));
+        parames.put("staffName",String.valueOf( staffName));
+        parames.put("Password",String.valueOf( password));
         HashMap<String,String> parameters=GetQueryString(parames);
-        String token=ServerGetPostUtil.sendGet(tokenApi,parameters.keySet().toString(),parameters.values().toString(),staffId,false);
+        String token=ServerGetPostUtil.sendGet(tokenApi,parameters.keySet().toString(),parameters.values().toString(),staffName,password,false);
         List<Model.Token> bList=new ArrayList<Model.Token>();
         try
         {
@@ -100,15 +104,15 @@ public class Token {
 
     public static  String GetRandom()
     {
-        Random rd=new Random();
-        int num=rd.nextInt(65535);
+        Random rd=new Random(Long.valueOf(String.valueOf(new java.util.Date().getTime())));
+        int num=rd.nextInt(Integer.MAX_VALUE);
         return Integer.toString(num);
     }
 
-    public static String GetSignature(String timeStamp,String nonce,int staffID,String date)
+    public static String GetSignature(String timeStamp,String nonce,String staffName,String password,String date)
     {
         Model.Token token=null;
-        Model.Token resultMsg= GetSignToken(staffID);
+        Model.Token resultMsg= GetSignToken(staffName,password);
         if(resultMsg!=null)
         {
             if(resultMsg.getStatusCode()!= StatusCodeEnum.Success.tostring())
@@ -127,12 +131,12 @@ public class Token {
         else
         {
             try {
-                throw new Exception("token为null，员工编号为：" +staffID);
+                throw new Exception("token为null，员工名为：" +staffName);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
-        String signStr=timeStamp+nonce+staffID+  token.getData().getSignToken();
+        String signStr=timeStamp+nonce+staffName+  token.getData().getSignToken();
         String[] sin=signStr.split("");
         Arrays.sort(sin,String.CASE_INSENSITIVE_ORDER);
         String ss="";
@@ -143,23 +147,12 @@ public class Token {
         return encode(ss).toUpperCase();
     }
 
-    public static String toHexString(String s) {
-        String str = "";
-        for (int i = 0; i < s.length(); i++) {
-            int ch = (int) s.charAt(i);
-            String s4 = Integer.toHexString(ch);
-            str = str + s4;
-        }
-        return str;
-    }
-
-
-    ///MD5加密
-    public static String encode(String str) {
+    ///MD5加密 非静态
+    public  String encodeg(String str) {
         StringBuffer buffer = new StringBuffer();
         try {
             MessageDigest md = MessageDigest.getInstance("MD5");
-            byte[] digest = md.digest(str.getBytes());
+            byte[] digest = md.digest(str.getBytes("UTF-8"));
             for (byte b : digest) {
                 int x = b & 0xff;  // 将byte转换2位的16进制int类型数
                 String s = Integer.toHexString(x); // 将一个int类型的数转为2位的十六进制数
@@ -170,7 +163,32 @@ public class Token {
             }
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
         return buffer.toString();
     }
+
+    ///MD5加密
+    public static String encode(String str) {
+        StringBuffer buffer = new StringBuffer();
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] digest = md.digest(str.getBytes("UTF-8"));
+            for (byte b : digest) {
+                int x = b & 0xff;  // 将byte转换2位的16进制int类型数
+                String s = Integer.toHexString(x); // 将一个int类型的数转为2位的十六进制数
+                if (s.length() == 1) {
+                    s = "0" + s;
+                }
+                buffer.append(s);
+            }
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return buffer.toString();
+    }
+
 }

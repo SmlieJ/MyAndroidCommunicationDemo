@@ -68,8 +68,8 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         ServerGetPostUtil get = new ServerGetPostUtil();
-                        show.setText(get.sendGet("","","",0,false));
-                        handler.sendEmptyMessage(0x123);
+                        //show.setText(get.sendGet("","","",0,false));
+                        //handler.sendEmptyMessage(0x123);
                     }
                 }.start();
             }
@@ -85,15 +85,15 @@ public class MainActivity extends AppCompatActivity {
                        /* GetPostUtil get = new GetPostUtil();
                         show.setText(get.sendPost());
                         handler.sendEmptyMessage(0x123);*/
-                        Token.Token ken=new Token.Token();
-                        Model.Token ee=  ken.GetSignToken(10);
-                        HashMap<String, String> params = new HashMap<String, String>();
-                        params.put("id", "1");
-                        params.put("name", "wahaha");
-                        HashMap<String,String> parames= ken.GetQueryString(params);
-                        Object Obj=ServerGetPostUtil.sendGet("http://cd502263.ngrok.io/api/product/getproduct",parames.keySet().toString(),parames.values().toString(),10000,true);
-                        String Json="{\"id\":1,\"Name\":\"安慕希\",\"Cont\":10,\"Price\":58.5}";
-                        Object Obj2=ServerGetPostUtil.sendPost("http://cd502263.ngrok.io/api/product/addProduct",Json,10000);
+                       // Token.Token ken=new Token.Token();
+                       // Model.Token ee=  ken.GetSignToken(10);
+                       // HashMap<String, String> params = new HashMap<String, String>();
+                       // params.put("id", "1");
+                       // params.put("name", "wahaha");
+                       // HashMap<String,String> parames= ken.GetQueryString(params);
+                       // Object Obj=ServerGetPostUtil.sendGet("http://cd502263.ngrok.io/api/product/getproduct",parames.keySet().toString(),parames.values().toString(),10000,true);
+                        //String Json="{\"id\":1,\"Name\":\"安慕希\",\"Cont\":10,\"Price\":58.5}";
+                        //Object Obj2=ServerGetPostUtil.sendPost("http://cd502263.ngrok.io/api/product/addProduct",Json,10000);
                     }
                 }.start();
             }

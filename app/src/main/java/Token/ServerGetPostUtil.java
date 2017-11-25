@@ -21,24 +21,27 @@ import static Token.Token.GetTimeStamp;
  */
 
 public class ServerGetPostUtil {
-    public static String sendGet(String webApi,String query,String queryStr,int staffId,boolean sign) {
+    public static String sendGet(String webApi,String query,String queryStr,String staffName,String Password,boolean sign) {
         query=query.replace("[","").replace("]","");
         queryStr=queryStr.replace("[","").replace("]","");
+        if (!sign)
+           queryStr=queryStr.replace("&","|");
         String  result="";
         BufferedReader in=null;
         try {
             String timeStamp = GetTimeStamp();
 /*            String nonce= GetRandom();*/
-            String nonce = "1534693224";
+            String nonce = GetRandom();
             //TODO 这里的ip 地址一定不能使localhost 一定要是电脑的或者是正式ip地址.
             result = webApi + "?" + queryStr;
             URL realUrl = new URL(result);
             HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
-            conn.setRequestProperty("staffid", String.valueOf(staffId));
+            conn.setRequestProperty("staffName", String.valueOf(staffName));
+            conn.setRequestProperty("Password", Password);
             conn.setRequestProperty("timestamp", timeStamp);
             conn.setRequestProperty("nonce", nonce);
             if (sign)
-                conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, staffId, query));
+                conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, staffName,Password, query));
 
             conn.setRequestProperty("accept", "*/*");
             conn.setRequestProperty("connection", "Keep-Alive");
@@ -82,7 +85,7 @@ public class ServerGetPostUtil {
 
      * @return URL所代表远程资源的响应
      */
-    public static String sendPost(String url,String data,int staffId) {
+    public static String sendPost(String url,String data,String staffName,String password) {
         OutputStreamWriter out = null;
         BufferedReader in = null;
         String result = "";
@@ -95,10 +98,11 @@ public class ServerGetPostUtil {
 
             String timeStamp = GetTimeStamp();
             String nonce = GetRandom();
-            conn.setRequestProperty("staffid",String.valueOf(staffId));
+            conn.setRequestProperty("staffName",String.valueOf(staffName));
+            conn.setRequestProperty("password",String.valueOf(password));
             conn.setRequestProperty("timestamp",timeStamp);
             conn.setRequestProperty("nonce",nonce);
-            conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, staffId, data));
+            conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, staffName,password, data));
 
             // 设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");

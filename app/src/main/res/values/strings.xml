@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">MyAndroidCommunicationDemo</string>
+    <string name="sendpost">SendPost</string>
 </resources>
