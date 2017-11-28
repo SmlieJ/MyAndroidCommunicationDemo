@@ -25,7 +25,7 @@ public class ServerGetPostUtil {
         query=query.replace("[","").replace("]","");
         queryStr=queryStr.replace("[","").replace("]","");
         if (!sign)
-           queryStr=queryStr.replace("&","|");
+           queryStr="staffID=10000";
         String  result="";
         BufferedReader in=null;
         try {

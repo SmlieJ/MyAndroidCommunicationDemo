@@ -35,7 +35,7 @@ public class Token {
 
     public static   Model.Token  GetSignToken(String Name,String password)
     {
-        String tokenApi="http://7a4c3864.ngrok.io/api/Service/GetToken";
+        String tokenApi="http://59.39.64.214:8011/api/Service/GetToken";
         String staffName=Name;
         HashMap<String,String>  parames=new HashMap<String,String>();
         parames.put("staffName",String.valueOf( staffName));

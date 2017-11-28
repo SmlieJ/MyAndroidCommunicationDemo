@@ -56,7 +56,7 @@ public class Main2Activity extends AppCompatActivity {
                         params.put("id", "1");
                         params.put("name", "wahaha");
                         HashMap<String,String> parames= ken.GetQueryString(params);
-                        Object Obj=ServerGetPostUtil.sendGet("http://7a4c3864.ngrok.io/api/product/getproduct",parames.keySet().toString()
+                        Object Obj=ServerGetPostUtil.sendGet("http://59.39.64.214:8011/api/product/getproduct",parames.keySet().toString()
                                 ,parames.values().toString(),Name,Password.toString(),true);
                         MeggShow=MeggShow+"Get:"+Obj.toString()+"\n\r";
                        /* Looper.prepare();
@@ -64,7 +64,7 @@ public class Main2Activity extends AppCompatActivity {
                         Looper.loop();*/
 
                         String Json="{\"id\":1,\"Name\":\"安慕希\",\"Cont\":10,\"Price\":58.5}";
-                        Object Obj2=ServerGetPostUtil.sendPost("http://7a4c3864.ngrok.io/api/product/addProduct",Json,
+                        Object Obj2=ServerGetPostUtil.sendPost("http://59.39.64.214:8011/api/product/addProduct",Json,
                                 Name ,Password.toString());
                         MeggShow=MeggShow+"Post:"+Obj2.toString()+"\n\r";
                        /* Looper.prepare();*/
