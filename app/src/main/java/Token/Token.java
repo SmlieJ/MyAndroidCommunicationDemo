@@ -63,7 +63,7 @@ public class Token {
             databean.setStaffId(Integer.parseInt(t1.getString("StaffId")));
             token1.setInfo(t.getString("Info"));
             token1.setStatusCode(Integer.parseInt(t.getString("StatusCode")));
-            token1.setData(databean);
+            token1.setData(databean); 
 
             //保存到缓存
             SharedPreferences.Editor editor= Main2Activity.getAppContext().getSharedPreferences("user",MODE_PRIVATE).edit();
