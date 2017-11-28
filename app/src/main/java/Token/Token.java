@@ -1,7 +1,12 @@
 package Token;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.text.format.DateUtils;
 import android.util.Base64;
+
+
+import com.example.twj.myandroidcommunicationdemo.Main2Activity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,18 +30,19 @@ import java.util.Calendar;
 import java.security.MessageDigest;
 import Model.StatusCodeEnum;
 
+import static android.content.Context.MODE_PRIVATE;
+import static com.example.twj.myandroidcommunicationdemo.Main2Activity.*;
+
 /**
  * Created by TOSHIBA on 2017/8/6.
  */
 
 public class Token {
-
-
-
+    private Context mContext;
 
     public static   Model.Token  GetSignToken(String Name,String password)
     {
-        String tokenApi="http://7a4c3864.ngrok.io/api/Service/GetToken";
+        String tokenApi="http://3ae65f21.ngrok.io/api/Service/GetToken";
         String staffName=Name;
         HashMap<String,String>  parames=new HashMap<String,String>();
         parames.put("staffName",String.valueOf( staffName));
@@ -54,10 +61,18 @@ public class Token {
             databean.setExpireTime(t1.getString("ExpireTime"));
             databean.setSignToken(t1.getString("SignToken"));
             databean.setStaffId(Integer.parseInt(t1.getString("StaffId")));
-
             token1.setInfo(t.getString("Info"));
             token1.setStatusCode(Integer.parseInt(t.getString("StatusCode")));
             token1.setData(databean);
+
+            //保存到缓存
+            SharedPreferences.Editor editor= Main2Activity.getAppContext().getSharedPreferences("user",MODE_PRIVATE).edit();
+            editor.putString("SignToken",t1.getString("SignToken"));
+            editor.putString("ExpireTime",t1.getString("ExpireTime"));
+            editor.putInt("StaffID",Integer.parseInt(t1.getString("StaffId")));
+
+            editor.commit();
+
             return token1;
         }
         catch(JSONException e)
@@ -136,7 +151,7 @@ public class Token {
                 e.printStackTrace();
             }
         }
-        String signStr=timeStamp+nonce+  token.getData().getSignToken()+staffName+date;
+        String signStr=timeStamp+nonce+  token.getData().getSignToken()+date;
         String[] sin=signStr.toUpperCase().split("");
         Arrays.sort(sin,String.CASE_INSENSITIVE_ORDER);
         String ss="";

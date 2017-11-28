@@ -1,6 +1,9 @@
 package Token;
 
+import android.content.SharedPreferences;
 import android.util.Xml;
+
+import com.example.twj.myandroidcommunicationdemo.Main2Activity;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,7 +28,7 @@ public class ServerGetPostUtil {
         query=query.replace("[","").replace("]","");
         queryStr=queryStr.replace("[","").replace("]","");
         if (!sign)
-           queryStr=queryStr.replace("&","|");
+           queryStr="staffID=10000";
         String  result="";
         BufferedReader in=null;
         try {
@@ -36,13 +39,19 @@ public class ServerGetPostUtil {
             result = webApi + "?" + queryStr;
             URL realUrl = new URL(result);
             HttpURLConnection conn = (HttpURLConnection) realUrl.openConnection();
-            conn.setRequestProperty("staffName", String.valueOf(staffName));
-            conn.setRequestProperty("Password", Password);
             conn.setRequestProperty("timestamp", timeStamp);
             conn.setRequestProperty("nonce", nonce);
-            if (sign)
-                conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, staffName,Password, query));
-
+            if (sign) {
+                conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, staffName, Password, query));
+                SharedPreferences preferences= Main2Activity.getAppContext().getSharedPreferences("user", 0);
+                String tokenValue=preferences.getString("SignToken","none");
+                conn.setRequestProperty("token",tokenValue.toString());
+            }
+            else
+            {
+                conn.setRequestProperty("staffName", String.valueOf(staffName));
+                conn.setRequestProperty("Password", Password);
+            }
             conn.setRequestProperty("accept", "*/*");
             conn.setRequestProperty("connection", "Keep-Alive");
             conn.setRequestProperty("user-agent",
@@ -103,6 +112,10 @@ public class ServerGetPostUtil {
             conn.setRequestProperty("timestamp",timeStamp);
             conn.setRequestProperty("nonce",nonce);
             conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, staffName,password, data));
+
+            SharedPreferences preferences= Main2Activity.getAppContext().getSharedPreferences("user", 0);
+            String tokenValue=preferences.getString("SignToken","none");
+            conn.setRequestProperty("token",tokenValue.toString());
 
             // 设置通用的请求属性
             conn.setRequestProperty("accept", "*/*");
