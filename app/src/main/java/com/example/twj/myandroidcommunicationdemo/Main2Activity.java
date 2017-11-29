@@ -51,27 +51,29 @@ public class Main2Activity extends AppCompatActivity {
                         //信息机制
                         Message msg= new Message();
                         msg.what=0x123;
+                        MeggShow="";
                         //缓存
                         Main2Activity.context = getApplicationContext();
 
                          Token.Token ken=new Token.Token();
                          String Name=TextName.getText().toString().toUpperCase();
                         String Password=ken.encodeg(TextPassword.getText().toString());
-                      /*  Model.Token ee=  ken.GetSignToken(Name.toString(),Password.toString());
+                        //登陆获取token
+                        Model.Token ee=  ken.GetSignToken(Name.toString(),Password.toString());
                         String megg=ee.getData().getSignToken().toString();
-                        MeggShow=megg.toString();*/
+                        MeggShow=megg.toString();
                         Looper.prepare();
 
                        /* myhandler.handleMessage(msg);
                         Looper.loop();*/
 
                         HashMap<String, String> params = new HashMap<String, String>();
-                        params.put("id", "1");
-                        params.put("name", "wahaha");
+                        params.put("line", "137");
+                        params.put("date", "2017-11-28");
                         HashMap<String,String> parames= ken.GetQueryString(params);
                        /* Object Obj=ServerGetPostUtil.sendGet("http://3ae65f21.ngrok.io/api/product/getproduct",parames.keySet().toString()
                                 ,parames.values().toString(),Name,Password.toString(),true);*/
-                        Object Obj=ServerGetPostUtil.sendGet("http://3ae65f21.ngrok.io/api/Line/GetTimes",parames.keySet().toString()
+                        Object Obj=ServerGetPostUtil.sendGet("http://c7233309.ngrok.io/api/Line/GetTimes",parames.keySet().toString()
                                 ,parames.values().toString(),Name,Password.toString(),true);
                         MeggShow=MeggShow+"Get:"+Obj.toString()+"\n\r";
 
@@ -79,10 +81,13 @@ public class Main2Activity extends AppCompatActivity {
                         myhandler.handleMessage(msg);
                         Looper.loop();*/
 
-                        /*String Json="{\"id\":1,\"Name\":\"安慕希\",\"Cont\":10,\"Price\":58.5}";
-                        Object Obj2=ServerGetPostUtil.sendPost("http://3ae65f21.ngrok.io/api/product/addProduct",Json,
+                   /*     String Json="{\"id\":1,\"Name\":\"安慕希\",\"Cont\":10,\"Price\":58.5}";*/
+                        String Json="{\"line\":137,\"date\":\"2017-11-28\"}";
+/*                        Object Obj2=ServerGetPostUtil.sendPost("http://3ae65f21.ngrok.io/api/product/addProduct",Json,
+                                Name ,Password.toString());*/
+                        Object Obj2=ServerGetPostUtil.sendPost("http://c7233309.ngrok.io/api/Line/PostTimes",Json,
                                 Name ,Password.toString());
-                        MeggShow=MeggShow+"Post:"+Obj2.toString()+"\n\r";*/
+                        MeggShow=MeggShow+"Post:"+Obj2.toString()+"\n\r";
                        /* Looper.prepare();*/
                         myhandler.handleMessage(msg);
                         Looper.loop();
@@ -109,15 +114,6 @@ public class Main2Activity extends AppCompatActivity {
     };
 
 
-    private AlertDialog.Builder setPositiveButton(AlertDialog.Builder builder)
-    {
-        return builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
-        });
-    }
     private  String MeggShow;
     private  TextView TextName;
     private TextView TextPassword;

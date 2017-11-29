@@ -42,7 +42,7 @@ public class ServerGetPostUtil {
             conn.setRequestProperty("timestamp", timeStamp);
             conn.setRequestProperty("nonce", nonce);
             if (sign) {
-                conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, staffName, Password, query));
+                conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, query));
                 SharedPreferences preferences= Main2Activity.getAppContext().getSharedPreferences("user", 0);
                 String tokenValue=preferences.getString("SignToken","none");
                 conn.setRequestProperty("token",tokenValue.toString());
@@ -107,11 +107,10 @@ public class ServerGetPostUtil {
 
             String timeStamp = GetTimeStamp();
             String nonce = GetRandom();
-            conn.setRequestProperty("staffName",String.valueOf(staffName));
-            conn.setRequestProperty("password",String.valueOf(password));
+
             conn.setRequestProperty("timestamp",timeStamp);
             conn.setRequestProperty("nonce",nonce);
-            conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, staffName,password, data));
+            conn.setRequestProperty("signature", GetSignature(timeStamp, nonce, data));
 
             SharedPreferences preferences= Main2Activity.getAppContext().getSharedPreferences("user", 0);
             String tokenValue=preferences.getString("SignToken","none");

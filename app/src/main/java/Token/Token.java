@@ -2,6 +2,7 @@ package Token;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.support.annotation.NonNull;
 import android.text.format.DateUtils;
 import android.util.Base64;
 
@@ -42,7 +43,7 @@ public class Token {
 
     public static   Model.Token  GetSignToken(String Name,String password)
     {
-        String tokenApi="http://3ae65f21.ngrok.io/api/Service/GetToken";
+        String tokenApi="http://c7233309.ngrok.io/api/Service/GetToken";
         String staffName=Name;
         HashMap<String,String>  parames=new HashMap<String,String>();
         parames.put("staffName",String.valueOf( staffName));
@@ -124,34 +125,13 @@ public class Token {
         return Integer.toString(num);
     }
 
-    public static String GetSignature(String timeStamp,String nonce,String staffName,String password,String date)
+    @NonNull
+    public static String GetSignature(String timeStamp, String nonce, String data)
     {
-        Model.Token token=null;
-        Model.Token resultMsg= GetSignToken(staffName,password);
-        if(resultMsg!=null)
-        {
-            if(resultMsg.getStatusCode()!= StatusCodeEnum.Success.tostring())
-            {
-                try {
-                    throw new Exception(resultMsg.getData().toString());
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            else
-            {
-                token=resultMsg;
-            }
-        }
-        else
-        {
-            try {
-                throw new Exception("token为null，员工名为：" +staffName);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        String signStr=timeStamp+nonce+  token.getData().getSignToken()+date;
+        SharedPreferences preferences= Main2Activity.getAppContext().getSharedPreferences("user", 0);
+        String tokenValue=preferences.getString("SignToken","none");
+
+        String signStr=timeStamp+nonce+  tokenValue+data;
         String[] sin=signStr.toUpperCase().split("");
         Arrays.sort(sin,String.CASE_INSENSITIVE_ORDER);
         String ss="";
