@@ -73,19 +73,22 @@ public class Main2Activity extends AppCompatActivity {
                         HashMap<String,String> parames= ken.GetQueryString(params);
                        /* Object Obj=ServerGetPostUtil.sendGet("http://3ae65f21.ngrok.io/api/product/getproduct",parames.keySet().toString()
                                 ,parames.values().toString(),Name,Password.toString(),true);*/
-                        Object Obj=ServerGetPostUtil.sendGet("http://c7233309.ngrok.io/api/Line/GetTimes",parames.keySet().toString()
+                      /*  Object Obj=ServerGetPostUtil.sendGet("http://c7233309.ngrok.io/api/Line/GetTimes",parames.keySet().toString()
                                 ,parames.values().toString(),Name,Password.toString(),true);
-                        MeggShow=MeggShow+"Get:"+Obj.toString()+"\n\r";
+                        MeggShow=MeggShow+"Get:"+Obj.toString()+"\n\r";*/
 
                        /* Looper.prepare();
                         myhandler.handleMessage(msg);
                         Looper.loop();*/
 
-                   /*     String Json="{\"id\":1,\"Name\":\"安慕希\",\"Cont\":10,\"Price\":58.5}";*/
-                        String Json="{\"line\":137,\"date\":\"2017-11-28\"}";
-/*                        Object Obj2=ServerGetPostUtil.sendPost("http://3ae65f21.ngrok.io/api/product/addProduct",Json,
+                    /*    String Json="{\"id\":1,\"Name\":\"安慕希\",\"Cont\":10,\"Price\":58.5}";*/
+                    /*    Object Obj2=ServerGetPostUtil.sendPost("http://3ae65f21.ngrok.io/api/product/addProduct",Json,
                                 Name ,Password.toString());*/
-                        Object Obj2=ServerGetPostUtil.sendPost("http://c7233309.ngrok.io/api/Line/PostTimes",Json,
+                    /*    String Json="{\"line\":137,\"date\":\"2017-11-28\"}";*/
+                    /*    Object Obj2=ServerGetPostUtil.sendPost("http://c7233309.ngrok.io/api/Line/PostTimes",Json,
+                                Name ,Password.toString()); */
+                           String Json="{\"TicketNumber\":123456789}";
+                        Object Obj2=ServerGetPostUtil.sendPost("http://c7233309.ngrok.io/api/Ticket/CheckTicket",Json,
                                 Name ,Password.toString());
                         MeggShow=MeggShow+"Post:"+Obj2.toString()+"\n\r";
                        /* Looper.prepare();*/
